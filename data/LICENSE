@@ -1,0 +1,9 @@
+The files in data/ and results/ contain questions, answers and derived material
+from RuBQ 2.0 (Rybin, Korablinov, Efimov, Braslavski, ESWC 2021,
+https://github.com/vladislavneon/RuBQ), together with model outputs generated
+for this study. They are licensed under the Creative Commons
+Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0):
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Changes: a 300-question sample of RuBQ 2.0 test with Qwen2.5-7B-Instruct
+generations, matching verdicts and summary metrics.

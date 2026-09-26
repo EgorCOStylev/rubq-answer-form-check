@@ -1,0 +1,50 @@
+{
+ "stats": {
+  "Acc_strict": 0.2966666666666667,
+  "Acc_lemma": 0.30333333333333334,
+  "D1": 0.02197802197802198,
+  "D2": 0.00959409594095941,
+  "D2_sc": 0.016666666666666666,
+  "mean_abs_dSC": 0.0030000000000000005
+ },
+ "ci": {
+  "Acc_strict": [
+   0.24333333333333335,
+   0.35333333333333333
+  ],
+  "Acc_lemma": [
+   0.25,
+   0.36
+  ],
+  "D1": [
+   0.0,
+   0.056179775280898875
+  ],
+  "D2": [
+   0.0014247402569085817,
+   0.020528030852421948
+  ],
+  "D2_sc": [
+   0.0033333333333333335,
+   0.03333333333333333
+  ],
+  "mean_abs_dSC": [
+   0.0006666666666666665,
+   0.006333333333333334
+  ]
+ },
+ "counts": {
+  "n": 300,
+  "D1_abs": 2,
+  "any_ok": 91,
+  "strict_only": 0,
+  "lemma_only": 2,
+  "pairs_lemma": 5420,
+  "pairs_lemma_not_strict": 52,
+  "q_sc_changed": 5
+ },
+ "decision_point": "Mechanism does not work: reformulate the topic or switch to the backup topic",
+ "decision_cautious": "Mechanism does not work: reformulate the topic or switch to the backup topic",
+ "border": true,
+ "note": "border recomputed after fixing the border-detection bug in metrics.decision(); stats and CIs unchanged"
+}

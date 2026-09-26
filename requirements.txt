@@ -1,0 +1,6 @@
+torch
+transformers>=4.45
+bitsandbytes
+accelerate
+pymorphy3
+numpy
