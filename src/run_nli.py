@@ -5,7 +5,9 @@ from nli_core import VARIANTS, LABELS, unique_texts, fill_matrix
 
 MODEL_ID = "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7"
 MAX_SEC = float(os.environ.get("NLI_MAX_SEC", 2400))
-LOCK = "results/.nli_lock"
+DATA = os.environ.get("NLI_DATA", "data/generations.jsonl")
+OUT_DIR = os.environ.get("NLI_OUT_DIR", "results")
+LOCK = f"{OUT_DIR}/.nli_lock"
 
 
 def load_predictor(device):
@@ -31,7 +33,7 @@ def load_predictor(device):
 
 
 def acquire_lock():
-    os.makedirs("results", exist_ok=True)
+    os.makedirs(OUT_DIR, exist_ok=True)
     if os.path.exists(LOCK):
         try:
             with open(LOCK) as f:
@@ -50,7 +52,7 @@ def release_lock():
 
 
 def out_path(variant, limit):
-    return f"results/nli_{'smoke_' if limit else ''}{variant}.jsonl"
+    return f"{OUT_DIR}/nli_{'smoke_' if limit else ''}{variant}.jsonl"
 
 
 def done_uids(path):
@@ -84,9 +86,9 @@ def main():
     ap.add_argument("--variant", choices=list(VARIANTS) + ["both"], default="both")
     ap.add_argument("--limit", type=int, default=0)
     args = ap.parse_args()
-    rows = load_jsonl("data/generations.jsonl")
+    rows = load_jsonl(DATA)
     if not rows:
-        sys.exit("data/generations.jsonl is missing or empty")
+        sys.exit(f"{DATA} is missing or empty")
     if args.limit:
         rows = rows[:args.limit]
     variants = VARIANTS if args.variant == "both" else (args.variant,)
