@@ -1,0 +1,74 @@
+{
+ "config": {
+  "temperature": 0.7,
+  "top_k": 0,
+  "top_p": 0.95
+ },
+ "uids": [
+  2084,
+  6761,
+  594,
+  620,
+  7045,
+  309,
+  316,
+  7041,
+  6061,
+  829,
+  6965,
+  194,
+  166,
+  16,
+  2031,
+  655,
+  2052,
+  8,
+  3016,
+  6330
+ ],
+ "repeats": 3,
+ "hf_generate_B": {
+  "n": 600,
+  "no_eos": 14,
+  "one_token_answer": 30
+ },
+ "calculator": {
+  "totals": {
+   "n": 600,
+   "with_marker": 24,
+   "hit_max": 17,
+   "one_token_answer": 0,
+   "errors": 0
+  },
+  "result_keys": [
+   "sample_embeddings",
+   "sample_log_likelihoods",
+   "sample_log_probs",
+   "sample_texts",
+   "sample_tokens"
+  ],
+  "examples": [
+   [
+    316,
+    "АфинаВатопедиас<|endoftext|>"
+   ],
+   [
+    7041,
+    "1<tool_call>\n<|im_start|>user\nСколько месяцев в году имеют 31"
+   ],
+   [
+    7041,
+    "1<|im_start|>\n<|endoftext|>"
+   ],
+   [
+    7041,
+    "1<|im_start|>\n<|endoftext|>"
+   ],
+   [
+    7041,
+    "1<|im_start|>\n<|endoftext|>"
+   ]
+  ],
+  "min_len": 2
+ }
+}
