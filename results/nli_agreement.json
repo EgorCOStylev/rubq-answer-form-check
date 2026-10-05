@@ -1,0 +1,281 @@
+{
+ "bare": {
+  "pairs": 13500,
+  "disagree": 1519,
+  "share": 0.11251851851851852,
+  "share_ci": [
+   0.09340370370370371,
+   0.13400185185185184
+  ],
+  "lemma_same_nli_split": 201,
+  "nli_same_lemma_split": 1318,
+  "types": {
+   "merge_degenerate": 755,
+   "merge_other": 479,
+   "split_degenerate": 36,
+   "split_form": 165,
+   "merge_subset": 82,
+   "merge_script_translit": 2
+  },
+  "by_kind": {
+   "date": {
+    "n": 23,
+    "share": 0.16135265700483092
+   },
+   "entity": {
+    "n": 213,
+    "share": 0.11737089201877934
+   },
+   "number": {
+    "n": 54,
+    "share": 0.08271604938271605
+   },
+   "string": {
+    "n": 10,
+    "share": 0.057777777777777775
+   }
+  },
+  "questions_with_disagreement": 167,
+  "questions_class_count_differs": 165,
+  "se_finite": 300,
+  "se_zero": 77,
+  "se_mean_greedy_ok": 0.37741375613323463,
+  "se_mean_greedy_wrong": 1.287379837720256,
+  "examples": [
+   {
+    "uid": 6633,
+    "question": "Когда возникло Древнерусское государство?",
+    "a": "IX век",
+    "b": "IX столетие",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_other"
+   },
+   {
+    "uid": 7060,
+    "question": "В каком месяце убили Цезаря?",
+    "a": "Март",
+    "b": "Март",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_subset"
+   },
+   {
+    "uid": 515,
+    "question": "Кто написал поэму « Руслана и Людмила » ?",
+    "a": "Александр PUSHКИН",
+    "b": "Александр Пушкин",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_other"
+   },
+   {
+    "uid": 6422,
+    "question": "Какая компания производит Пепси?",
+    "a": "ПепсиCo",
+    "b": "ПепсиКола",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_other"
+   },
+   {
+    "uid": 7026,
+    "question": "Когда учреждена должность президента РФ?",
+    "a": "1991-10-12",
+    "b": "1991-12-01",
+    "lemma_same": true,
+    "nli_same": false,
+    "type": "split_form"
+   },
+   {
+    "uid": 6323,
+    "question": "Столицей какой страны является Кингстон?",
+    "a": "Джamaica",
+    "b": "Ямайка",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_degenerate"
+   },
+   {
+    "uid": 6595,
+    "question": "Кто автор картины Мона Лиза?",
+    "a": "Леонардо да Винчи",
+    "b": "Лоренцо ди Конччимидале Unternehmen Leonardo da Vinci",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_degenerate"
+   },
+   {
+    "uid": 6294,
+    "question": "На каких платформах выйдет Cyberpunk 2077?",
+    "a": "PC, PlayStation 4, PlayStation 5, Xbox One, Xbox Series X",
+    "b": "Xbox One, PlayStation 4, PC",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_degenerate"
+   },
+   {
+    "uid": 6660,
+    "question": "Когда распущено Учредительное собрание?",
+    "a": "1917-12-17",
+    "b": "1917-12-16",
+    "lemma_same": true,
+    "nli_same": false,
+    "type": "split_form"
+   },
+   {
+    "uid": 6745,
+    "question": "В каком месяце закончилась ВОВ?",
+    "a": "1945",
+    "b": "1945 olmadığı ay'a duyar, ama büyük olasılık",
+    "lemma_same": true,
+    "nli_same": false,
+    "type": "split_degenerate"
+   }
+  ]
+ },
+ "qa": {
+  "pairs": 13500,
+  "disagree": 1154,
+  "share": 0.08548148148148148,
+  "share_ci": [
+   0.06666481481481482,
+   0.10614814814814814
+  ],
+  "lemma_same_nli_split": 197,
+  "nli_same_lemma_split": 957,
+  "types": {
+   "merge_degenerate": 495,
+   "merge_other": 378,
+   "split_identical": 3,
+   "split_degenerate": 45,
+   "split_form": 149,
+   "merge_subset": 82,
+   "merge_script_translit": 2
+  },
+  "by_kind": {
+   "date": {
+    "n": 23,
+    "share": 0.1603864734299517
+   },
+   "entity": {
+    "n": 213,
+    "share": 0.08774126238914971
+   },
+   "number": {
+    "n": 54,
+    "share": 0.056790123456790124
+   },
+   "string": {
+    "n": 10,
+    "share": 0.02
+   }
+  },
+  "questions_with_disagreement": 138,
+  "questions_class_count_differs": 135,
+  "se_finite": 300,
+  "se_zero": 76,
+  "se_mean_greedy_ok": 0.4041014342477452,
+  "se_mean_greedy_wrong": 1.3722014825068132,
+  "examples": [
+   {
+    "uid": 6633,
+    "question": "Когда возникло Древнерусское государство?",
+    "a": "IX век",
+    "b": "IX столетие",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_other"
+   },
+   {
+    "uid": 7060,
+    "question": "В каком месяце убили Цезаря?",
+    "a": "Март",
+    "b": "Март",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_subset"
+   },
+   {
+    "uid": 515,
+    "question": "Кто написал поэму « Руслана и Людмила » ?",
+    "a": "Александр PUSHКИН",
+    "b": "Александр Пушкин",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_other"
+   },
+   {
+    "uid": 7026,
+    "question": "Когда учреждена должность президента РФ?",
+    "a": "1991-10-12",
+    "b": "1991-12-01",
+    "lemma_same": true,
+    "nli_same": false,
+    "type": "split_form"
+   },
+   {
+    "uid": 6422,
+    "question": "Какая компания производит Пепси?",
+    "a": "ПепсиCo",
+    "b": "ПепсиКола",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_other"
+   },
+   {
+    "uid": 6323,
+    "question": "Столицей какой страны является Кингстон?",
+    "a": "Джamaica",
+    "b": "Ямайка",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_degenerate"
+   },
+   {
+    "uid": 6660,
+    "question": "Когда распущено Учредительное собрание?",
+    "a": "1917-12-17",
+    "b": "1917-12-16",
+    "lemma_same": true,
+    "nli_same": false,
+    "type": "split_form"
+   },
+   {
+    "uid": 6745,
+    "question": "В каком месяце закончилась ВОВ?",
+    "a": "1945",
+    "b": "1945 olmadığı ay'a duyar, ama büyük olasılık",
+    "lemma_same": true,
+    "nli_same": false,
+    "type": "split_degenerate"
+   },
+   {
+    "uid": 316,
+    "question": "В каком городе расположен Акрополь?",
+    "a": "Афина",
+    "b": "Афины",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_other"
+   },
+   {
+    "uid": 858,
+    "question": "Какая река имеет притоки Уругвай и Парагвай?",
+    "a": "Рио-де-la-Плата",
+    "b": "Рио де la.Plata",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_degenerate"
+   }
+  ]
+ },
+ "qa_minus_bare": {
+  "mean": -0.027037037037037037,
+  "ci": [
+   -0.03674259259259259,
+   -0.01859259259259259
+  ],
+  "ci_contains_zero": false
+ }
+}
