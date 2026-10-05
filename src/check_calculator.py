@@ -1,4 +1,4 @@
-import json, os, sys
+import importlib, json, os, subprocess, sys, traceback
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
@@ -8,6 +8,25 @@ from sp_check_eos import UIDS_0V, MARKERS
 
 REPEATS = 3
 CFG = CONFIGS["B"]
+# lm-polygraph is installed with --no-deps, so its imports are satisfied one missing module at a time
+PKG = {"fastchat": "fschat", "hydra": "hydra-core", "bs4": "beautifulsoup4", "bert_score": "bert-score",
+       "sklearn": "scikit-learn"}
+MODULES = ["lm_polygraph.model_adapters", "lm_polygraph.utils.generation_parameters",
+           "lm_polygraph.stat_calculators.sample"]
+
+
+def ensure_lm_polygraph(limit=30):
+    for _ in range(limit):
+        try:
+            for m in MODULES:
+                importlib.import_module(m)
+            return
+        except ModuleNotFoundError as e:
+            pkg = PKG.get(e.name.split(".")[0], e.name.split(".")[0])
+            print("installing", pkg, flush=True)
+            extra = ["--no-deps"] if pkg == "fschat" else []
+            subprocess.run([sys.executable, "-m", "pip", "install", "-q", *extra, pkg], check=True)
+    raise RuntimeError("lm_polygraph imports still failing after installs")
 
 
 def main():
@@ -42,6 +61,7 @@ def main():
     print("hf_generate_B", tot, flush=True)
 
     try:
+        ensure_lm_polygraph()
         from lm_polygraph.model_adapters import WhiteboxModel
         from lm_polygraph.utils.generation_parameters import GenerationParameters
         from lm_polygraph.stat_calculators.sample import SamplingGenerationCalculator
@@ -50,6 +70,7 @@ def main():
         calc = SamplingGenerationCalculator(samples_n=N_SAMPLES)
     except Exception as e:
         out["calculator"] = f"setup failed: {type(e).__name__}: {e}"
+        out["calculator_traceback"] = traceback.format_exc()
         print(out["calculator"], flush=True)
         calc = None
 
