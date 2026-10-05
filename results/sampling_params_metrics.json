@@ -1,0 +1,185 @@
+{
+ "acc_fn": "lemma",
+ "greedy_floor": {
+  "version1": 0.07,
+  "amended": 0.05,
+  "per_criterion": {
+   "a": 0.03,
+   "b": 0.01,
+   "c": 0.04
+  }
+ },
+ "threshold": 0.07,
+ "n_questions": 100,
+ "summaries": [
+  {
+   "cfg": "A",
+   "temperature": 1.0,
+   "top_k": 0,
+   "top_p": 1.0,
+   "n_questions": 100,
+   "n_samples": 1000,
+   "degenerate": 0.19399999999999998,
+   "degenerate_ci": [
+    0.15,
+    0.245
+   ],
+   "degenerate_amended": 0.179,
+   "degenerate_amended_ci": [
+    0.13797500000000001,
+    0.225
+   ],
+   "deg_a": 0.07300000000000001,
+   "deg_b": 0.055999999999999994,
+   "deg_c": 0.142,
+   "deg_c_but_correct": 0.015,
+   "acc_samples": 0.272,
+   "acc_samples_ci": [
+    0.19399999999999998,
+    0.348
+   ],
+   "acc_samples_nondeg": 0.3188585607940447,
+   "acc_greedy": 0.31,
+   "unique_share": 0.5010000000000001,
+   "gen_time_sec": null
+  },
+  {
+   "cfg": "B",
+   "temperature": 0.7,
+   "top_k": 0,
+   "top_p": 0.95,
+   "n_questions": 100,
+   "n_samples": 1000,
+   "degenerate": 0.09,
+   "degenerate_ci": [
+    0.052974999999999994,
+    0.13302499999999987
+   ],
+   "degenerate_amended": 0.07400000000000001,
+   "degenerate_amended_ci": [
+    0.041999999999999996,
+    0.113
+   ],
+   "deg_a": 0.024000000000000004,
+   "deg_b": 0.015000000000000003,
+   "deg_c": 0.067,
+   "deg_c_but_correct": 0.016,
+   "acc_samples": 0.29200000000000004,
+   "acc_samples_ci": [
+    0.209975,
+    0.373
+   ],
+   "acc_samples_nondeg": 0.3032967032967033,
+   "acc_greedy": 0.31,
+   "unique_share": 0.3550000000000001,
+   "gen_time_sec": 265.294
+  },
+  {
+   "cfg": "C",
+   "temperature": 1.0,
+   "top_k": 50,
+   "top_p": 0.95,
+   "n_questions": 100,
+   "n_samples": 1000,
+   "degenerate": 0.122,
+   "degenerate_ci": [
+    0.085,
+    0.165
+   ],
+   "degenerate_amended": 0.107,
+   "degenerate_amended_ci": [
+    0.07300000000000001,
+    0.146
+   ],
+   "deg_a": 0.04200000000000001,
+   "deg_b": 0.028999999999999998,
+   "deg_c": 0.087,
+   "deg_c_but_correct": 0.015,
+   "acc_samples": 0.28099999999999997,
+   "acc_samples_ci": [
+    0.201,
+    0.359
+   ],
+   "acc_samples_nondeg": 0.30296127562642367,
+   "acc_greedy": 0.31,
+   "unique_share": 0.45900000000000013,
+   "gen_time_sec": 278.674
+  },
+  {
+   "cfg": "D",
+   "temperature": 0.8,
+   "top_k": 50,
+   "top_p": 0.95,
+   "n_questions": 100,
+   "n_samples": 1000,
+   "degenerate": 0.096,
+   "degenerate_ci": [
+    0.05800000000000001,
+    0.13899999999999998
+   ],
+   "degenerate_amended": 0.079,
+   "degenerate_amended_ci": [
+    0.046974999999999996,
+    0.11800000000000001
+   ],
+   "deg_a": 0.026999999999999996,
+   "deg_b": 0.017,
+   "deg_c": 0.07399999999999998,
+   "deg_c_but_correct": 0.017,
+   "acc_samples": 0.29000000000000004,
+   "acc_samples_ci": [
+    0.20799999999999996,
+    0.37099999999999994
+   ],
+   "acc_samples_nondeg": 0.3019911504424779,
+   "acc_greedy": 0.31,
+   "unique_share": 0.393,
+   "gen_time_sec": 270.345
+  }
+ ],
+ "picked": null,
+ "why": "no configuration passed the threshold 0.070 (greedy floor 0.050 + 2 pp)",
+ "examples": [
+  {
+   "cfg": "C",
+   "uid": 85,
+   "question": "Кто плавал на папирусной лодке \"Ра\" и на плоту \"Кон-Тики\"?",
+   "gold": "Хейердал, Тур",
+   "crit": "a",
+   "text": "Томас Эдисон  \nГьермо де Серро  \nЭ"
+  },
+  {
+   "cfg": "C",
+   "uid": 6459,
+   "question": "Кто снял фильм Солдат Джейн?",
+   "gold": "Ридли Скотт",
+   "crit": "b",
+   "text": "Уильям Мейнинг顿-Мизиган<|im_end|><|im_end|>"
+  },
+  {
+   "cfg": "C",
+   "uid": 604,
+   "question": "В каком ирландском замке можно поцеловать Камень Красноречия, чтобы обрести дар убедительности и лести?",
+   "gold": "Бларни",
+   "crit": "bc",
+   "text": "Три角形城堡<|im_end|><|im_end|><|im_end|><|im_end|><|im_end|><|im_end|><|im_end|><|im_end|><|im_end|><|im_end|><|im_end|>"
+  },
+  {
+   "cfg": "D",
+   "uid": 2029,
+   "question": "Как раньше назывался город Краснодар?",
+   "gold": "Екатеринодар",
+   "crit": "a",
+   "text": "Крепость Красныйeligeven\n<|im_start|>assistant Крепость"
+  },
+  {
+   "cfg": "C",
+   "uid": 6051,
+   "question": "Кто муж Алсу?",
+   "gold": "Ян Абрамов",
+   "crit": "c",
+   "text": "Кarl Ibrahim<|im_end|><|im_end|><|im_end|><|im_end|><|im_end|><|im_end|><|im_end|>"
+  }
+ ],
+ "n_degenerate_total": 502
+}

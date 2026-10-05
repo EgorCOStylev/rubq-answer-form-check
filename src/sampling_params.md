@@ -21,4 +21,4 @@ Fixed before generation. A sample is degenerate if it is wrong under the lemma m
 
 ## Running
 
-On Kaggle with a T4, run `notebooks/step_sampling_params.ipynb` with Save & Run All. Generation takes about 15 minutes, the eos check about 8, each preceded by a model load of about 5. Outputs are `data/sampling_params/generations_sp.jsonl`, `results/sampling_params_metrics.json` and `results/sampling_params_eos_check.json`.
+On Kaggle with a T4, run `notebooks/step_sampling_params.ipynb` with Save & Run All. Generation takes about 14 minutes and the eos check about 20, each preceded by a model load of a few minutes. Outputs are `data/sampling_params/generations_sp.jsonl`, `results/sampling_params_metrics.json` and `results/sampling_params_eos_check.json`.

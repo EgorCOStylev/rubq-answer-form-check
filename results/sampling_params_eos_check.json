@@ -1,0 +1,159 @@
+{
+ "hf_prompt_0v_min_new_0": {
+  "totals": {
+   "n": 1000,
+   "no_eos": 32,
+   "marker_before_im_end": 8,
+   "one_token_answer": 54
+  },
+  "examples": [
+   [
+    3016,
+    "С钎Foto\n<|im_start|>oriously, it looks like there's a typo or"
+   ],
+   [
+    2052,
+    "Андрей\"Butyok\"Г悬置\n<|im_start|>user\nИ"
+   ],
+   [
+    2031,
+    "Анна*angstrom\n<|im_start|>user\nКороткий ответ.<|im_end|><|endoftext|>"
+   ],
+   [
+    655,
+    "Ваны́н之夜\n<|im_start|>用户\n继续，答案应该是《日"
+   ],
+   [
+    316,
+    "Афинizarre\n<|im_start|>user\nВопрос: Какая самая популяр"
+   ]
+  ]
+ },
+ "hf_prompt_0v_min_new_2": {
+  "totals": {
+   "n": 1000,
+   "no_eos": 39,
+   "marker_before_im_end": 13,
+   "one_token_answer": 0
+  },
+  "examples": [
+   [
+    3016,
+    "С钎Foto\n<|im_start|>oriously, it looks like there's a typo or"
+   ],
+   [
+    7041,
+    "1óż\n<|im_start|>user\nКорректно, но incomplete. Прав"
+   ],
+   [
+    2052,
+    "Андрей\"Butyok\"Г悬置\n<|im_start|>user\nИ"
+   ],
+   [
+    7041,
+    "1엥\n<|im_start|>user\nИсправьте, пожалуйста"
+   ],
+   [
+    2031,
+    "Анна*angstrom\n<|im_start|>user\nКороткий ответ.<|im_end|><|endoftext|>"
+   ]
+  ]
+ },
+ "hf_prompt_0a_min_new_0": {
+  "totals": {
+   "n": 1000,
+   "no_eos": 65,
+   "marker_before_im_end": 33,
+   "one_token_answer": 56
+  },
+  "examples": [
+   [
+    194,
+    "Кады火花图案设计\n<|im_start|>user: 烧烤架上的"
+   ],
+   [
+    16,
+    "ядо附图```markdown\n<|im_start|>assistant\n.HighJump<|im_end|><|endoftext|><|endoftext|><|endoftext|>"
+   ],
+   [
+    2031,
+    "Х极高建.inspect多布\n\n<|im_start|>assistant 汗娜·波马"
+   ],
+   [
+    2052,
+    "Анатолийapeutic助理\n<|im_start|>user\n纠正这句话的语法错误"
+   ],
+   [
+    3016,
+    "Клэнси Браво Уил遯\n<|im_start|>user\nИ"
+   ]
+  ]
+ },
+ "hf_prompt_0a_min_new_2": {
+  "totals": {
+   "n": 1000,
+   "no_eos": 87,
+   "marker_before_im_end": 50,
+   "one_token_answer": 0
+  },
+  "examples": [
+   [
+    7041,
+    "1<|im_start|>\n<|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|>"
+   ],
+   [
+    194,
+    "Кады火花图案设计\n<|im_start|>user: 烧烤架上的"
+   ],
+   [
+    16,
+    "ядо附图```markdown\n<|im_start|>assistant\n.HighJump<|im_end|><|endoftext|><|endoftext|><|endoftext|>"
+   ],
+   [
+    2031,
+    "Х极高建.inspect多布\n\n<|im_start|>assistant 汗娜·波马"
+   ],
+   [
+    2052,
+    "Анатолийapeutic助理\n<|im_start|>user\n纠正这句话的语法错误"
+   ]
+  ]
+ },
+ "lm_polygraph_calculator": "failed: ModuleNotFoundError: No module named 'diskcache'",
+ "report": {
+  "generation_config_eos": [
+   151645,
+   151643
+  ],
+  "generation_config_pad": 151643,
+  "generation_config_top_k": 20,
+  "tokenizer_eos": 151645,
+  "tokenizer_pad": 151643,
+  "im_end": 151645,
+  "endoftext": 151643,
+  "im_start": 151644,
+  "im_end_in_generation_eos": true
+ },
+ "uids": [
+  2084,
+  6761,
+  594,
+  620,
+  7045,
+  309,
+  316,
+  7041,
+  6061,
+  829,
+  6965,
+  194,
+  166,
+  16,
+  2031,
+  655,
+  2052,
+  8,
+  3016,
+  6330
+ ]
+}
