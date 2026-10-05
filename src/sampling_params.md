@@ -17,8 +17,8 @@ Fixed before generation. A sample is degenerate if it is wrong under the lemma m
 
 ## Files
 
-`sp_select.py` draws the questions. `sp_generate.py` generates B, C and D into `data/sampling_params/generations_sp.jsonl`, one block per question, and resumes from what is already on disk. `sp_check_eos.py` checks the stop condition: eos ids in the model config, and the effect of `min_new_tokens=2` that LM-Polygraph 0.7.0 sets in its sampling calculator. `sp_metrics.py` computes the metrics and applies the rule. `sp_common.py` holds the constants and the degeneracy definition.
+`sp_select.py` draws the questions. `sp_generate.py` generates B, C and D into `data/sampling_params/generations_sp.jsonl`, one block per question, and resumes from what is already on disk. `sp_check_eos.py` checks the stop condition on the 20 questions of the LM-Polygraph check (stage 0v): eos ids in the model config, and the effect of `min_new_tokens=2` that LM-Polygraph 0.7.0 sets in its sampling calculator, with the stage 0v prompt and with the stage 0a prompt. `sp_metrics.py` computes the metrics and applies the rule. `sp_common.py` holds the constants and the degeneracy definition.
 
 ## Running
 
-On Kaggle with a T4, run `notebooks/step_sampling_params.ipynb` with Save & Run All. Generation takes about 15 minutes, the eos check about 4, each preceded by a model load of about 5. Outputs are `data/sampling_params/generations_sp.jsonl`, `results/sampling_params_metrics.json` and `results/sampling_params_eos_check.json`.
+On Kaggle with a T4, run `notebooks/step_sampling_params.ipynb` with Save & Run All. Generation takes about 15 minutes, the eos check about 8, each preceded by a model load of about 5. Outputs are `data/sampling_params/generations_sp.jsonl`, `results/sampling_params_metrics.json` and `results/sampling_params_eos_check.json`.
