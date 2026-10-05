@@ -2,6 +2,16 @@
 
 **TL;DR — negative result.** With a short-answer prompt, Qwen2.5-7B-Instruct (4-bit) almost never answers in an inflected or prepositional form. Lemmatized matching changes the correctness verdict for **2.2%** of answers and the self-consistency score for **1.7%** of questions. Both are below the 3% threshold fixed before the experiment, so by the pre-registered rule the premise is rejected.
 
+The repository also holds the work that followed: the choice of sampling parameters, the first confidence signals and the main generation run. Status on 5 October 2026: generation for the core experiment is finished, the signals themselves are not yet computed on the main run. The sections after "Deviations, caveats, scope" describe these later stages.
+
+| Stage | Outcome | Files |
+|---|---|---|
+| Answer-form check (this document, up to "Deviations") | Premise rejected: D1 = 2.2%, D2_sc = 1.7% | `src/match.py`, `src/metrics.py`, `results/metrics.json` |
+| Sampling parameters | No configuration passed the pre-registered rule, B chosen outside it | `src/sp_*.py`, `src/sampling_params.md`, `results/sampling_params_*.json` |
+| Core signals | Self-consistency AUROC 0.823 on 300 questions, NLI input `qa` | `src/signals.py`, `src/nli_core.py`, `src/core_signals.md`, `results/sc.json`, `results/nli_agreement.json` |
+| LM-Polygraph calculator check | Calculator rejected for sample generation | `src/check_calculator.py`, `results/calculator_check.json` |
+| Main run | 1920 questions, greedy plus 10 samples at B, reproduces earlier stages | `src/main_generate.py`, `src/main_check.py`, `data/main/`, `results/main/` |
+
 ## Motivation
 
 A planned master's thesis compares LLM confidence signals as hallucination detectors on Russian factoid QA with short answers (RuBQ 2.0). Its novelty rested on one **premise**: models often give a *correct* answer in a surface form that differs from the reference, e.g. «в Москве» vs «Москва», or «Толстого» vs «Толстой». If that were true:
@@ -80,19 +90,110 @@ If a CI crosses a threshold, this is recorded and the more cautious decision is 
 - **Lemmatizer error.** pymorphy3 `parse[0]` produces one visible error on the control pairs: «Восточной» → «восточноить». It did not cause any merges.
 - **Limited setup.** One model, one prompt, 300 questions.
 
+## Later stage: sampling parameters
+
+The noisy samples above motivated a pre-registered choice of sampling parameters for the main run (details in `src/sampling_params.md`). Four configurations were compared on 100 questions drawn with seed 20261004 from the 300 of the check (`data/sampling_params/question_ids.json`), 10 samples each, same prompt and `max_new_tokens=16`. Configuration A is taken from `data/generations.jsonl`.
+
+| | T | top_k | top_p |
+|---|---|---|---|
+| A | 1.0 | 0 | 1.0 |
+| B | 0.7 | 0 | 0.95 |
+| C | 1.0 | 50 | 0.95 |
+| D | 0.8 | 50 | 0.95 |
+
+**Selection rule (fixed before generation).** A sample is degenerate if it is wrong under lemma matching and at least one of the following holds: it reached `max_new_tokens` without `<|im_end|>`; it contains CJK characters; the reference and its aliases contain Cyrillic while the share of Cyrillic among the letters of the answer is below 50%. The same definition applied to greedy answers gives the floor, 5.0%. A configuration is dropped if its degenerate share exceeds the floor by more than 2 pp (threshold 7.0%). Among the rest the highest sample accuracy wins; within 1 pp the smaller |T - 1| wins. AUROC is not used. If nothing passes, the run stops and the grid is not extended.
+
+| Config | Degenerate share, 95% CI | Sample accuracy | Share of unique samples |
+|---|---|---|---|
+| A | 17.9% [13.8, 22.5] | 27.2% | 50.1% |
+| B | 7.4% [4.2, 11.3] | 29.2% | 35.5% |
+| C | 10.7% [7.3, 14.6] | 28.1% | 45.9% |
+| D | 7.9% [4.7, 11.8] | 29.0% | 39.3% |
+
+Greedy accuracy on the same 100 questions is 31.0%. **No configuration passed the threshold, so the rule selects nothing** (`picked: null` in `results/sampling_params_metrics.json`). B exceeds the threshold by 0.4 pp, within the confidence interval. B was chosen for the main run by the owner outside the rule, and the report records it as such.
+
+**Stop-condition check** (`src/sp_check_eos.py`, 20 questions from the LM-Polygraph check, 1000 samples per condition, T = 1.0, top_k = 0, top_p = 1.0). Samples that continue the chat after a junk token (`<|im_start|>` or `<|endoftext|>` before the end of the answer) occur without `min_new_tokens`: 0.8% with the earlier LM-Polygraph prompt and 3.3% with this prompt. `min_new_tokens=2`, which LM-Polygraph 0.7.0 sets in its sampling calculator, raises these to 1.3% and 5.0% and removes all one-token answers (5.4-5.6% without it). The main mechanism is a junk token drawn from the full vocabulary, followed by `\n<|im_start|>`.
+
+## Later stage: core signals
+
+Details in `src/core_signals.md`, computed on the 300 questions of the check (T = 1.0).
+
+**Self-consistency** is one minus the share of the largest group of samples under the lemma match. It takes 10 distinct values on 10 samples, so the AURC uses the exact expectation over random order inside tied scores (tie-aware). Error rate of the greedy answer 69.7% (209 / 300). AUROC against greedy error 0.823 [0.774, 0.867]. AURC 0.490 [0.415, 0.567]; the best and worst order inside ties give 0.422 and 0.578, the ideal ranking 0.336 and the random one 0.697.
+
+**NLI for semantic entropy.** Model `MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7`. Two inputs were compared by their disagreement with the lemma grouping on the 13 500 sample pairs: `bare` (the answers alone) and `qa` (question plus answer, as in Kuhn et al., 2023).
+
+| Input | Disagreeing pairs | Questions with a disagreement |
+|---|---|---|
+| `bare` | 1519 (11.3%, CI [9.3, 13.4]) | 167 |
+| `qa` | 1154 (8.5%, CI [6.7, 10.6]) | 138 |
+
+The paired difference `qa` minus `bare` is -2.7 pp [-3.7, -1.9], so by the pre-registered rule the main run uses `qa`. This choice is by agreement with the lemma grouping and does not show that `qa` is better for semantic entropy: many disagreements are correct merges by NLI that the lemma match cannot see («Таллинн» and «Таллин», «IX век» and «IX столетие»). Pair types and manual-review files are in `results/nli_agreement.json` and `results/review_top50_*.csv`. Semantic entropy is finite on 300 of 300 questions.
+
+**Limitations of `match.py`** found by direct counting (the protocol is frozen, so nothing was changed). Two identical word answers to a number question («Март» and «Март») do not match because they contain no digits: 19 of 1474 identical pairs, 3 questions. Different full dates of one year without `T` can match by year alone: 46 of 1035 date pairs, 3 questions. Identical dates without a year do not match: 39 of 697 pairs, 2 questions. At most 8 of 300 questions are affected. Fixing this would require recomputing the check above.
+
+## Later stage: LM-Polygraph calculator check
+
+Can `SamplingGenerationCalculator` from LM-Polygraph 0.7.0 generate the samples of the main run? `src/check_calculator.py` compares it with `model.generate` without `min_new_tokens` at configuration B, on 20 questions with 3 repeats (600 samples per side).
+
+| | One-token answers | Samples with `<\|im_start\|>` or `<\|endoftext\|>` | Reached 16 tokens | Without eos |
+|---|---|---|---|---|
+| `model.generate` | 30 (5.0%) | not counted | not counted | 14 (2.3%) |
+| Calculator | 0 | 24 (4.0%) | 17 (2.8%) | not counted |
+
+The calculator's minimum sample length is 2 tokens. It forces answers like «1» to continue, for example into `1<|im_start|>\n<|endoftext|>`. The main run therefore generates samples with its own code. The calculator result contains `sample_log_probs` and `sample_log_likelihoods`, so the library's estimators can still be fed with statistics collected by hand; this has not been tested on 0.7.0.
+
+## Later stage: main run
+
+`src/main_generate.py` runs all 1920 answerable questions: the same prompt and greedy settings as above, and 10 samples at configuration B (T = 0.7, top_k = 0, top_p = 0.95) without `min_new_tokens`, seed = 42·10⁵ + uid. It stores the token ids, the log-probabilities of every token under the model's own distribution (before temperature and top-p), the log-probability of the eos token and a flag whether generation stopped on eos. It resumes from the file on disk and takes about 1 h 55 min on a T4. `src/run_nli.py` then fills the `qa` NLI matrices for all samples (about 2 minutes on GPU). `src/main_check.py` writes `results/main_generation_check.json`.
+
+| Check | Result |
+|---|---|
+| Questions, duplicates, errors | 1920, 0, 0 |
+| Greedy answers equal to the first stage | 300 of 300 |
+| Samples equal to the sampling-parameter stage, config B | 100 of 100 questions (1000 of 1000 samples) |
+| Greedy accuracy, lemma match | 33.0% |
+| Sample accuracy, lemma match | 31.1% |
+| Samples without eos | 2.8% (greedy answers: 42 of 1920) |
+| One-token samples | 2.2% |
+| Degenerate and wrong (rule definition) | 8.05% (7.4% on the 100 questions of the parameter stage) |
+
+The log-probability lists have the same length as the token lists in every row, and there are no NaN or positive values. The 20 questions of the calculator check were not representative: one-token answers are 2.2% over all questions against 5.0% there.
+
+**Not done yet.** Probability, perplexity, self-consistency and semantic entropy on the main data and their comparison by AUROC and AURC. Agreement of the NLI and lemma groupings at configuration B (`src/analyze_nli.py` reads the files of the first stage). p(True), verbalized confidence, a second model and a run on translated data, which need separate GPU runs. Manual check of about 200 answers. A decision on fixing the number and date rules of `match.py`.
+
 ## Reproduce
+
+All generation runs on Kaggle (GPU T4, Internet on) and must be started with **Save & Run All (Commit)**. An interactive session stops with the browser, and a stopped commit run loses its outputs.
 
 1. `git clone https://github.com/vladislavneon/RuBQ.git`, then `python src/step1_data.py` to get the dataset statistics (CPU only).
 2. `notebooks/step2_generate.ipynb` on Kaggle (GPU T4, Internet on). Set `SMOKE=False` and use **Save & Run All (Commit)**, so that `generations.jsonl` is stored in the version output. About 17 GPU-minutes. The output is included here as `data/generations.jsonl`.
 3. `notebooks/step34_metrics.ipynb` (CPU). Attach the step 2 output as input; it writes `metrics.json` and `manual_check.csv`.
+4. `notebooks/step_sampling_params.ipynb`: about 14 minutes for generation and 20 for the eos check.
+5. `notebooks/step_core_signals.ipynb`: self-consistency on CPU, NLI on GPU.
+6. `notebooks/step_calculator_check.ipynb`: about 10 minutes.
+7. `notebooks/step_main_run.ipynb`: tests, a 5-question smoke run, the full run, the check and NLI. It resumes from `data/main/generations_main.jsonl` if the file is in the repository.
+
+Tests: `python -m unittest discover -s tests`. They run on CPU with stubs for the lemmatizer and the NLI model.
 
 ## Layout
 
 ```
 src/        step1_data.py, match.py, metrics.py
-notebooks/  step2_generate.ipynb, step34_metrics.ipynb
+            sp_common.py, sp_select.py, sp_generate.py, sp_check_eos.py, sp_metrics.py, sampling_params.md
+            signals.py, nli_core.py, run_sc.py, run_nli.py, analyze_nli.py, core_signals.md
+            check_calculator.py
+            gen_utils.py, main_generate.py, main_check.py
+notebooks/  step2_generate.ipynb, step34_metrics.ipynb, step_sampling_params.ipynb,
+            step_core_signals.ipynb, step_calculator_check.ipynb, step_main_run.ipynb
+tests/      test_core_signals.py, test_gen_utils.py
 data/       sample_ids.json, generations.jsonl   (CC BY-SA 4.0, derived from RuBQ 2.0)
+            sampling_params/   question_ids.json, generations_sp.jsonl
+            main/              generations_main.jsonl
 results/    metrics.json, manual_check.csv
+            sampling_params_metrics.json, sampling_params_eos_check.json
+            sc.json, nli_agreement.json, nli_bare.jsonl, nli_qa.jsonl, review_top50_*.csv
+            calculator_check.json
+            main_generation_check.json, main/nli_qa.jsonl
 ```
 
 Code comments are partly in Russian.
@@ -103,4 +204,4 @@ Code: MIT (`LICENSE`). Data in `data/` and `results/` contains questions and ans
 
 > Rybin I., Korablinov V., Efimov P., Braslavski P. *RuBQ 2.0: An Innovated Russian Question Answering Dataset.* ESWC 2021. https://github.com/vladislavneon/RuBQ
 
-Model outputs were generated with Qwen2.5-7B-Instruct (Apache 2.0).
+Model outputs were generated with Qwen2.5-7B-Instruct (Apache 2.0). The NLI model is `MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7`.
