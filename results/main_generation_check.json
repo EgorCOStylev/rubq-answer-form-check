@@ -1,0 +1,23 @@
+{
+ "questions": 1920,
+ "duplicate_uids": 0,
+ "samples": 19200,
+ "greedy_accuracy_lemma": 0.3302083333333333,
+ "sample_accuracy_lemma": 0.3108854166666667,
+ "share_no_eos": 0.028072916666666666,
+ "share_one_token": 0.0215625,
+ "share_degenerate_any": 0.09333333333333334,
+ "share_degenerate_and_wrong": 0.08046875,
+ "greedy_no_eos": 42,
+ "errors": 0,
+ "greedy_same_as_stage0a": {
+  "n": 300,
+  "same": 300
+ },
+ "samples_same_as_sampling_params_B": {
+  "n": 100,
+  "identical_lists": 100,
+  "identical_samples": 1000,
+  "total_samples": 1000
+ }
+}
