@@ -1,6 +1,6 @@
 # Analysis plan for the main run
 
-Status: fixed on 2026-10-05, before any AUROC or AURC was computed on the main-run data. Later changes are recorded in a dated "Amendments" section at the end of this file and are not made in place.
+Status: fixed on 2026-10-06, before any AUROC or AURC was computed on the main-run data. Later changes are recorded in a dated "Amendments" section at the end of this file and are not made in place.
 
 ## 1. Scope
 
@@ -73,4 +73,6 @@ AUPRC with the base rate of errors; risk-coverage curves and AURC, tie-aware for
 
 ## 10. Amendments
 
-None.
+### 2026-10-06, removal of max-softmax probability
+
+Max-softmax probability is removed from the baselines (section 4) and from the combination of cheap signals (section 7). Under the definition of the maximum sequence probability used in LM-Polygraph (MSP) it is a monotone function of the sum of token log-probabilities of the greedy answer, so it would duplicate the primary comparator and add nothing to the combination. The baseline is answer length only. The combination in section 7 is logistic regression on the sum of token log-probabilities and answer length. No signal had been evaluated against correctness when this amendment was made. The family of comparisons, the margin and the decision rules are unchanged.
