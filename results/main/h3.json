@@ -1,0 +1,194 @@
+{
+ "params": {
+  "B": 10000,
+  "seed": 20261006,
+  "margin": 0.03,
+  "level": "percentile 95% two-sided; 90% exploratory"
+ },
+ "semantic_entropy_undefined": 0,
+ "n": 1920,
+ "error_rate": 0.6697916666666667,
+ "auroc": {
+  "comparator": {
+   "auroc": 0.8249892067448032,
+   "ci95": [
+    0.8064756737406031,
+    0.8432518797377078
+   ],
+   "n": 1920
+  },
+  "mean_lp": {
+   "auroc": 0.8104495881391938,
+   "ci95": [
+    0.7899209086867599,
+    0.830231127938786
+   ],
+   "n": 1920
+  },
+  "sc": {
+   "auroc": 0.7880266004680347,
+   "ci95": [
+    0.7683209047573433,
+    0.8075631273152875
+   ],
+   "n": 1920
+  },
+  "se": {
+   "auroc": 0.7884644632072648,
+   "ci95": [
+    0.769202557237399,
+    0.8071108930774152
+   ],
+   "n": 1920
+  },
+  "se_w": {
+   "auroc": 0.780819036358552,
+   "ci95": [
+    0.7607391789950975,
+    0.8002392614567059
+   ],
+   "n": 1920
+  },
+  "length": {
+   "auroc": 0.6229118730713189,
+   "ci95": [
+    0.5977871816143323,
+    0.6476158086718666
+   ],
+   "n": 1920
+  },
+  "comparator_with_eos": {
+   "auroc": 0.8248279211699888,
+   "ci95": [
+    0.8062278168794814,
+    0.8431288673905959
+   ],
+   "n": 1920
+  }
+ },
+ "h3": {
+  "sc_minus_comparator": {
+   "auroc_a": 0.7880266004680347,
+   "auroc_b": 0.8249892067448032,
+   "diff": -0.036962606276768506,
+   "ci95": [
+    -0.04781121349701149,
+    -0.02603483903591344
+   ],
+   "outcome95": "not established within ±0.03",
+   "ci90_exploratory": [
+    -0.045950673901899115,
+    -0.02784939556791487
+   ],
+   "outcome90_exploratory": "not established within ±0.03",
+   "n": 1920,
+   "dropped": 0
+  },
+  "se_minus_comparator": {
+   "auroc_a": 0.7884644632072648,
+   "auroc_b": 0.8249892067448032,
+   "diff": -0.03652474353753843,
+   "ci95": [
+    -0.04957580634864818,
+    -0.02320567438664178
+   ],
+   "outcome95": "not established within ±0.03",
+   "ci90_exploratory": [
+    -0.04741218846117025,
+    -0.025338179945698064
+   ],
+   "outcome90_exploratory": "not established within ±0.03",
+   "n": 1920,
+   "dropped": 0
+  }
+ },
+ "h3_holds": false,
+ "h3_statement": "not established within ±0.03",
+ "sensitivity_comparisons": {
+  "sc_minus_mean_lp": {
+   "auroc_a": 0.7880266004680347,
+   "auroc_b": 0.8104495881391938,
+   "diff": -0.022422987671159023,
+   "ci95": [
+    -0.03523165346571289,
+    -0.009773948224542204
+   ],
+   "outcome95": "not established within ±0.03",
+   "ci90_exploratory": [
+    -0.03320295205494122,
+    -0.011808393532477259
+   ],
+   "outcome90_exploratory": "not established within ±0.03",
+   "n": 1920,
+   "dropped": 0
+  },
+  "se_minus_mean_lp": {
+   "auroc_a": 0.7884644632072648,
+   "auroc_b": 0.8104495881391938,
+   "diff": -0.021985124931928945,
+   "ci95": [
+    -0.037596571387887856,
+    -0.006236295273248956
+   ],
+   "outcome95": "not established within ±0.03",
+   "ci90_exploratory": [
+    -0.0353821711834955,
+    -0.008703277722632786
+   ],
+   "outcome90_exploratory": "not established within ±0.03",
+   "n": 1920,
+   "dropped": 0
+  },
+  "se_weighted_minus_comparator": {
+   "auroc_a": 0.780819036358552,
+   "auroc_b": 0.8249892067448032,
+   "diff": -0.04417017038625126,
+   "ci95": [
+    -0.05893563455285612,
+    -0.029387726526054626
+   ],
+   "outcome95": "not established within ±0.03",
+   "ci90_exploratory": [
+    -0.056481908622358926,
+    -0.031579481644601476
+   ],
+   "outcome90_exploratory": "inferior",
+   "n": 1920,
+   "dropped": 0
+  },
+  "sc_minus_comparator_with_eos": {
+   "auroc_a": 0.7880266004680347,
+   "auroc_b": 0.8248279211699888,
+   "diff": -0.03680132070195408,
+   "ci95": [
+    -0.047246584188298704,
+    -0.02614742943403319
+   ],
+   "outcome95": "not established within ±0.03",
+   "ci90_exploratory": [
+    -0.045664919073937486,
+    -0.027985483249731772
+   ],
+   "outcome90_exploratory": "not established within ±0.03",
+   "n": 1920,
+   "dropped": 0
+  },
+  "se_minus_comparator_with_eos": {
+   "auroc_a": 0.7884644632072648,
+   "auroc_b": 0.8248279211699888,
+   "diff": -0.036363457962724,
+   "ci95": [
+    -0.049115912212067646,
+    -0.02340658754545897
+   ],
+   "outcome95": "not established within ±0.03",
+   "ci90_exploratory": [
+    -0.04718898077645369,
+    -0.025373087534903128
+   ],
+   "outcome90_exploratory": "not established within ±0.03",
+   "n": 1920,
+   "dropped": 0
+  }
+ }
+}
