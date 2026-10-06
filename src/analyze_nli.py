@@ -1,4 +1,4 @@
-import csv, itertools, json, os, sys
+import argparse, csv, itertools, json, os, sys
 from collections import Counter
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -10,7 +10,7 @@ from nli_core import (VARIANTS, unique_texts, same_nli, greedy_classes, se_frequ
 B = 2000
 
 
-def question_stats(r, q, texts, M, fn):
+def question_stats(r, q, texts, M, fn, with_ok=True):
     S, kind = r["samples"], q_kind(q)
     expected, idx = unique_texts(S)
     if expected != texts:
@@ -27,7 +27,7 @@ def question_stats(r, q, texts, M, fn):
             pairs.append(dict(a=S[i], b=S[j], lemma_same=ls, nli_same=ns, type=t))
     return dict(uid=r["uid"], kind=kind, n_pairs=len(S) * (len(S) - 1) // 2, disagree=pairs,
                 lemma_classes=len(set(lemma_labels)), nli_classes=len(set(nli_labels)),
-                se=se_frequency(nli_labels), ok=bool(correct(r["greedy"], q, fn)))
+                se=se_frequency(nli_labels), ok=bool(correct(r["greedy"], q, fn)) if with_ok else None)
 
 
 def ci(v):
@@ -49,7 +49,7 @@ def summarize(stats, rng):
         sub = [s for s in stats if s["kind"] == k]
         by_kind[k] = dict(n=len(sub), share=sum(len(s["disagree"]) for s in sub) / sum(s["n_pairs"] for s in sub))
     se = np.array([s["se"] for s in stats])
-    ok = np.array([s["ok"] for s in stats])
+    ok = np.array([s["ok"] for s in stats]) if stats[0]["ok"] is not None else None
     return dict(
         pairs=int(sum(s["n_pairs"] for s in stats)), disagree=int(sum(len(s["disagree"]) for s in stats)),
         share=share, share_ci=share_ci_,
@@ -59,8 +59,8 @@ def summarize(stats, rng):
         questions_with_disagreement=int(sum(bool(s["disagree"]) for s in stats)),
         questions_class_count_differs=int(sum(s["lemma_classes"] != s["nli_classes"] for s in stats)),
         se_finite=int(np.isfinite(se).sum()), se_zero=int((se == 0).sum()),
-        se_mean_greedy_ok=float(se[ok].mean()) if ok.any() else None,
-        se_mean_greedy_wrong=float(se[~ok].mean()) if (~ok).any() else None)
+        se_mean_greedy_ok=float(se[ok].mean()) if ok is not None and ok.any() else None,
+        se_mean_greedy_wrong=float(se[~ok].mean()) if ok is not None and (~ok).any() else None)
 
 
 def paired_diff(stats_a, stats_b, rng):
@@ -96,34 +96,50 @@ def examples(stats, rows, k=10):
     return out
 
 
-def load_variant(v, uids):
-    data = {r["uid"]: r for r in load_jsonl(f"results/nli_{v}.jsonl")}
+def load_variant(v, uids, nli_dir="results"):
+    path = f"{nli_dir}/nli_{v}.jsonl"
+    data = {r["uid"]: r for r in load_jsonl(path)}
     missing = [u for u in uids if u not in data]
     if missing:
-        sys.exit(f"results/nli_{v}.jsonl is incomplete: {len(missing)} of {len(uids)} questions missing; rerun src/run_nli.py")
+        sys.exit(f"{path} is incomplete: {len(missing)} of {len(uids)} questions missing; rerun src/run_nli.py")
     return data
 
 
-def main():
-    rows = load_jsonl("data/generations.jsonl")
+def parse_args(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--data", default="data/generations.jsonl")
+    ap.add_argument("--nli-dir", default="results")
+    ap.add_argument("--out-dir", default="results")
+    ap.add_argument("--variants", nargs="+", default=list(VARIANTS))
+    ap.add_argument("--no-correctness", action="store_true", help="do not evaluate greedy correctness (pre-AUROC checks)")
+    return ap.parse_args(argv)
+
+
+def main(argv=None):
+    args = parse_args([] if argv is None else argv)
+    os.makedirs(args.out_dir, exist_ok=True)
+    rows = load_jsonl(args.data)
     rubq = load_rubq()
     uids = [r["uid"] for r in rows]
     rng = np.random.default_rng(0)
     res, all_stats = {}, {}
-    for v in VARIANTS:
-        data = load_variant(v, uids)
-        stats = [question_stats(r, rubq[r["uid"]], data[r["uid"]]["texts"], data[r["uid"]]["M"], match_lemma)
+    for v in args.variants:
+        data = load_variant(v, uids, args.nli_dir)
+        stats = [question_stats(r, rubq[r["uid"]], data[r["uid"]]["texts"], data[r["uid"]]["M"], match_lemma,
+                          with_ok=not args.no_correctness)
                  for r in rows]
         all_stats[v] = stats
         res[v] = summarize(stats, rng)
-        write_review(f"results/review_top50_{v}.csv", stats, rows, rubq)
+        write_review(f"{args.out_dir}/review_top50_{v}.csv", stats, rows, rubq)
         res[v]["examples"] = examples(stats, rows)
         print(v, {k: x for k, x in res[v].items() if k != "examples"}, flush=True)
-    mean, ci_ = paired_diff(all_stats["bare"], all_stats["qa"], rng)
-    res["qa_minus_bare"] = dict(mean=mean, ci=ci_, ci_contains_zero=ci_[0] <= 0 <= ci_[1])
-    json.dump(res, open("results/nli_agreement.json", "w"), ensure_ascii=False, indent=1)
-    print("qa_minus_bare", res["qa_minus_bare"], flush=True)
+    if {"bare", "qa"} <= set(args.variants):
+        mean, ci_ = paired_diff(all_stats["bare"], all_stats["qa"], rng)
+        res["qa_minus_bare"] = dict(mean=mean, ci=ci_, ci_contains_zero=ci_[0] <= 0 <= ci_[1])
+        print("qa_minus_bare", res["qa_minus_bare"], flush=True)
+    json.dump(res, open(f"{args.out_dir}/nli_agreement.json", "w"), ensure_ascii=False, indent=1)
+    return res, all_stats
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
