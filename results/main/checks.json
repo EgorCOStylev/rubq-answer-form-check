@@ -1,0 +1,162 @@
+{
+ "check_1_semantic_entropy": {
+  "questions": 1920,
+  "se_finite": 1920,
+  "se_undefined": 0,
+  "se_zero": 733,
+  "se_min": -0.0,
+  "se_max": 2.3025850929940455,
+  "nli_classes_hist": {
+   "1": 733,
+   "2": 290,
+   "3": 200,
+   "4": 134,
+   "5": 125,
+   "6": 115,
+   "7": 106,
+   "8": 80,
+   "9": 78,
+   "10": 59
+  }
+ },
+ "check_2_lemma_vs_nli_pairs": {
+  "pairs": 86400,
+  "disagree": 6444,
+  "share": 0.07458333333333333,
+  "share_ci95_bootstrap_by_question": [
+   0.06770688657407407,
+   0.08188888888888887
+  ],
+  "types": {
+   "merge_degenerate": 2162,
+   "merge_subset": 891,
+   "merge_other": 2510,
+   "split_degenerate": 161,
+   "split_identical": 224,
+   "split_form": 492,
+   "merge_script_translit": 4
+  },
+  "by_answer_type": {
+   "date": {
+    "n": 139,
+    "share": 0.08872901678657075
+   },
+   "entity": {
+    "n": 1399,
+    "share": 0.08351997458502104
+   },
+   "number": {
+    "n": 354,
+    "share": 0.03471437539234149
+   },
+   "string": {
+    "n": 28,
+    "share": 0.06190476190476191
+   }
+  },
+  "questions_with_disagreement": 623,
+  "lemma_same_nli_split": 877,
+  "nli_same_lemma_split": 5567,
+  "review_csv": "results/main/review_top50_qa.csv",
+  "examples": [
+   {
+    "uid": 175,
+    "question": "В какой легкоатлетической дисциплине олимпийский рекорд Боба Бимона 1968 года был побит только в 1991",
+    "a": "100 метров",
+    "b": "100 метров",
+    "lemma_same": true,
+    "nli_same": false,
+    "type": "split_identical"
+   },
+   {
+    "uid": 698,
+    "question": "Кем впоследствии стал студент Дуайт Филли Дэвис, разработчик и один из основателей кубка Дэвиса?",
+    "a": "tennis player",
+    "b": "tennis player",
+    "lemma_same": true,
+    "nli_same": false,
+    "type": "split_degenerate"
+   },
+   {
+    "uid": 6632,
+    "question": "В каком месяце произошло Бородинское сражение?",
+    "a": "Август",
+    "b": "август",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_subset"
+   },
+   {
+    "uid": 6633,
+    "question": "Когда возникло Древнерусское государство?",
+    "a": "IX век",
+    "b": "IX век",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_subset"
+   },
+   {
+    "uid": 6748,
+    "question": "В каком месяце произошел взрыв в Чернобыле?",
+    "a": "апрель",
+    "b": "апрель",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_subset"
+   },
+   {
+    "uid": 6751,
+    "question": "В каком месяце произошло восстание декабристов?",
+    "a": "декабрь",
+    "b": "декабрь",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_subset"
+   },
+   {
+    "uid": 7049,
+    "question": "При какой температуре плавится медь?",
+    "a": "1083°C",
+    "b": "1083°C",
+    "lemma_same": true,
+    "nli_same": false,
+    "type": "split_identical"
+   },
+   {
+    "uid": 7060,
+    "question": "В каком месяце убили Цезаря?",
+    "a": "Март",
+    "b": "Март",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_subset"
+   },
+   {
+    "uid": 756,
+    "question": "Столицей какой республики СССР был город Фрунзе?",
+    "a": "Кыргызская Советская Социалистическая Республика",
+    "b": "Кыргызской Республики",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_degenerate"
+   },
+   {
+    "uid": 3112,
+    "question": "Где находится Международный банк реконструкции и развития (МБРР)?",
+    "a": "Вашингтон д.к.",
+    "b": "Вашингтон DC",
+    "lemma_same": false,
+    "nli_same": true,
+    "type": "merge_other"
+   }
+  ],
+  "stage_0a_reference": {
+   "qa": 0.085,
+   "bare": 0.113
+  }
+ },
+ "check_3_class_counts": {
+  "questions_class_count_differs": 612,
+  "questions": 1920
+ }
+}
