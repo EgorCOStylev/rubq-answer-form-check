@@ -2,7 +2,7 @@
 
 **TL;DR — negative result.** With a short-answer prompt, Qwen2.5-7B-Instruct (4-bit) almost never answers in an inflected or prepositional form. Lemmatized matching changes the correctness verdict for **2.2%** of answers and the self-consistency score for **1.7%** of questions. Both are below the 3% threshold fixed before the experiment, so by the pre-registered rule the premise is rejected.
 
-The repository also holds the work that followed: the choice of sampling parameters, the first confidence signals and the main generation run. Status on 5 October 2026: generation for the core experiment is finished, the signals themselves are not yet computed on the main run. The sections after "Deviations, caveats, scope" describe these later stages.
+> Status on 7 October 2026: the main run and its analysis are finished. H3 is not established within ±0.03: the log-probability comparator reaches AUROC 0.825, self-consistency and semantic entropy 0.788 each (see "How to read this repository").
 
 | Stage | Outcome | Files |
 |---|---|---|
@@ -11,6 +11,22 @@ The repository also holds the work that followed: the choice of sampling paramet
 | Core signals | Self-consistency AUROC 0.823 on 300 questions, NLI input `qa` | `src/signals.py`, `src/nli_core.py`, `src/core_signals.md`, `results/sc.json`, `results/nli_agreement.json` |
 | LM-Polygraph calculator check | Calculator rejected for sample generation | `src/check_calculator.py`, `results/calculator_check.json` |
 | Main run | 1920 questions, greedy plus 10 samples at B, reproduces earlier stages | `src/main_generate.py`, `src/main_check.py`, `data/main/`, `results/main/` |
+| Checks before AUROC (stage A) | Semantic entropy finite on all 1920 questions, lemma and NLI diverge on 7.5% of pairs | `src/analyze_nli.py`, `src/main_checks.md`, `results/main/` |
+| Main analysis (stage B) | H3 not established within ±0.03: AUROC 0.825 against 0.788 and 0.788 | `src/main_results.py`, `src/main_results.md`, `results/main/h3.json` |
+
+## How to read this repository
+
+The analysis of the main run was fixed in a plan ([src/analysis_plan.md](src/analysis_plan.md)) committed on 2026-10-05, before any AUROC or AURC was computed on the main-run data. Earlier stages (1 to 4 below) were run before the plan, and the plan discloses which of their results were known ([section 2](src/analysis_plan.md)). Amendments dated 2026-10-06 and 2026-10-07 are recorded in section 10 of the plan; departures found while running the checks are listed in [deviations](results/main/deviations.md). Stage A checks were committed (5bdbf71, 63e17eb) before the stage B analysis (ac016d9). State of the repository at the time of the results: tag [`main-results-v1`](../../releases/tag/main-results-v1).
+
+1. **Does answer-form variation distort exact-match labels?** Little: strict and lemma labels differ on 2.2% of 300 questions [0.0; 5.6]. → [metrics](results/metrics.json)
+2. **Can the sampling signals be computed with the LM-Polygraph calculator?** Not as is: it forces a minimum of two tokens and zeroes one-token answers, so the samples of the main run are generated with our own code. → [check](results/calculator_check.json)
+3. **Which sampling configuration?** Configuration B (T = 0.7, top_k = 0, top_p = 0.95). No candidate met the pre-set threshold, B was chosen outside the rule. → [notes](src/sampling_params.md)
+4. **Do self-consistency and NLI grouping agree with lemma matching?** On stage 0a the `qa` input diverges from lemma matching on 8.5% of sample pairs, `bare` on 11.3%. → [notes](src/core_signals.md)
+5. **Main run.** 1920 questions, one greedy answer and 10 samples each. → [generation check](results/main_generation_check.json)
+6. **Checks before AUROC.** Semantic entropy is finite on all questions; lemma and NLI diverge on 7.5% of pairs. → [notes](src/main_checks.md)
+7. **H3: is sampling at least as good as log-probability?** Not established within ±0.03. AUROC 0.825 for the log-probability comparator against 0.788 for self-consistency and 0.788 for semantic entropy; paired differences −0.037 [−0.048; −0.026] and −0.037 [−0.050; −0.023] against a margin of 0.03. → [notes](src/main_results.md)
+
+Notebooks, code and outputs for each step: [docs/FILE_MAP.md](docs/FILE_MAP.md).
 
 ## Motivation
 
@@ -159,11 +175,13 @@ The calculator's minimum sample length is 2 tokens. It forces answers like «1»
 
 The log-probability lists have the same length as the token lists in every row, and there are no NaN or positive values. The 20 questions of the calculator check were not representative: one-token answers are 2.2% over all questions against 5.0% there.
 
-**Not done yet.** Probability, perplexity, self-consistency and semantic entropy on the main data and their comparison by AUROC and AURC. Agreement of the NLI and lemma groupings at configuration B (`src/analyze_nli.py` reads the files of the first stage). p(True), verbalized confidence, a second model and a run on translated data, which need separate GPU runs. Manual check of about 200 answers. A decision on fixing the number and date rules of `match.py`.
+The checks before AUROC (stage A) and the H3 analysis (stage B) are described in [How to read this repository](#how-to-read-this-repository) and in `src/main_checks.md` and `src/main_results.md`.
+
+**Not done yet.** p(True), verbalized confidence, a second model and a run on translated data, which need separate GPU runs. Manual check of about 200 answers. The corrected number and date matching is computed as a sensitivity row; the frozen `match.py` stays primary.
 
 ## Reproduce
 
-All generation runs on Kaggle (GPU T4, Internet on) and must be started with **Save & Run All (Commit)**. An interactive session stops with the browser, and a stopped commit run loses its outputs.
+All generation runs on Kaggle (GPU T4, Internet on) and must be started with **Save & Run All (Commit)**. An interactive session stops with the browser, and a stopped commit run loses its outputs. The analysis of the main run (steps 8 and 9) needs no GPU. Run step 8 before step 9: the plan requires the checks before any AUROC.
 
 1. `git clone https://github.com/vladislavneon/RuBQ.git`, then `python src/step1_data.py` to get the dataset statistics (CPU only).
 2. `notebooks/step2_generate.ipynb` on Kaggle (GPU T4, Internet on). Set `SMOKE=False` and use **Save & Run All (Commit)**, so that `generations.jsonl` is stored in the version output. About 17 GPU-minutes. The output is included here as `data/generations.jsonl`.
@@ -172,28 +190,20 @@ All generation runs on Kaggle (GPU T4, Internet on) and must be started with **S
 5. `notebooks/step_core_signals.ipynb`: self-consistency on CPU, NLI on GPU.
 6. `notebooks/step_calculator_check.ipynb`: about 10 minutes.
 7. `notebooks/step_main_run.ipynb`: tests, a 5-question smoke run, the full run, the check and NLI. It resumes from `data/main/generations_main.jsonl` if the file is in the repository.
+8. `notebooks/step_main_checks.ipynb` (stage A, CPU): semantic entropy finiteness and agreement of the NLI and lemma groupings at configuration B. It must run before any AUROC is computed.
+9. `notebooks/step_main_results.ipynb` (stage B, CPU): tests, then `src/main_results.py`. It writes the H3 comparisons, secondary metrics, cost axis and sensitivity rows to `results/main/` and the summary to `src/main_results.md`.
 
 Tests: `python -m unittest discover -s tests`. They run on CPU with stubs for the lemmatizer and the NLI model.
 
 ## Layout
 
 ```
-src/        step1_data.py, match.py, metrics.py
-            sp_common.py, sp_select.py, sp_generate.py, sp_check_eos.py, sp_metrics.py, sampling_params.md
-            signals.py, nli_core.py, run_sc.py, run_nli.py, analyze_nli.py, core_signals.md
-            check_calculator.py
-            gen_utils.py, main_generate.py, main_check.py
-notebooks/  step2_generate.ipynb, step34_metrics.ipynb, step_sampling_params.ipynb,
-            step_core_signals.ipynb, step_calculator_check.ipynb, step_main_run.ipynb
-tests/      test_core_signals.py, test_gen_utils.py
-data/       sample_ids.json, generations.jsonl   (CC BY-SA 4.0, derived from RuBQ 2.0)
-            sampling_params/   question_ids.json, generations_sp.jsonl
-            main/              generations_main.jsonl
-results/    metrics.json, manual_check.csv
-            sampling_params_metrics.json, sampling_params_eos_check.json
-            sc.json, nli_agreement.json, nli_bare.jsonl, nli_qa.jsonl, review_top50_*.csv
-            calculator_check.json
-            main_generation_check.json, main/nli_qa.jsonl
+src/         code and notes for all stages, plus analysis_plan.md (fixed 2026-10-05, amendments in section 10)
+notebooks/   one notebook per stage, run on Kaggle
+tests/       unit tests (CPU, with stubs for the lemmatizer and the NLI model)
+data/        RuBQ-derived inputs and generations (CC BY-SA 4.0)
+results/     outputs of each stage; results/main/ holds the main run, stage A and stage B
+docs/        FILE_MAP.md: every file with its stage and role
 ```
 
 Code comments are partly in Russian.
