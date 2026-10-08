@@ -80,3 +80,23 @@ Max-softmax probability is removed from the baselines (section 4) and from the c
 ### 2026-10-07, status date
 
 The status date in the header was changed from 2026-10-05 to 2026-10-06 when the amendment of 2026-10-06 was committed. The first version of this file was committed on 2026-10-05 (commit a263ca5). No signal had been evaluated against correctness when either version was committed.
+
+### 2026-10-09, stability of the H3 differences to the choice of samples (sensitivity analysis)
+ 
+This amendment is made after the results of sections 5 and 7 were computed and seen (tag `main-results-v1`). It adds a sensitivity analysis. It does not change the family of comparisons, the margin, the decision rules or the H3 outcome already reported.
+ 
+Reason. The bootstrap in section 5 resamples questions and does not cover the randomness of sampling: all signals come from one set of 10 samples drawn with one seed. Both H3 differences lie close to the margin (-0.037 for self-consistency and for semantic entropy, margin -0.03).
+ 
+Procedure. The subsets of 9 of the 10 samples per question from section 7 are reused (K = 9, 20 subsets, the same seed and procedure). For each subset, self-consistency is recomputed from lemma groups and semantic entropy from NLI clusters of that subset, with the same grouping and clustering procedures as for K = 10 and the existing NLI verdicts (no new NLI calls). The comparator does not depend on samples and is not recomputed. For each subset and each sampling signal the difference AUROC(sampling) minus AUROC(comparator) on all 1920 questions is computed. No bootstrap is run per subset.
+ 
+Reported: for each sampling signal, the standard deviation, minimum and maximum of the difference over the 20 subsets, the mean, and the number of subsets with a difference above -0.03 (descriptive only).
+ 
+Decision rule, fixed before the computation. The bootstrap standard error of each H3 difference is taken as the width of its 95% interval divided by 3.92: 0.022 / 3.92 ≈ 0.0056 for self-consistency and 0.027 / 3.92 ≈ 0.0069 for semantic entropy.
+ 
+- If for both sampling signals the standard deviation over subsets is below half of this standard error (below 0.0028 and 0.0034), sampling randomness is small compared with the variability over questions. The result is reported as a limitation and no further runs are made.
+- Otherwise a second set of 10 samples with a different seed on all 1920 questions is considered (about 4-4.5 GPU hours). The decision to run it, and its analysis, are recorded in a separate amendment before the run.
+The threshold of one half means that adding the subset variance to the bootstrap variance widens the interval by at most about 12%.
+ 
+Limitations of this check. Subsets of 9 drawn from the same 10 samples share at least 8 samples, so their spread is a lower bound on the variability under a new seed. The check uses K = 9, while the H3 decision uses K = 10.
+ 
+Outputs: the script in `src/` and the results in `results/main/`, committed after this amendment.
