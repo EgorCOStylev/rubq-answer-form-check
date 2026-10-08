@@ -74,6 +74,14 @@ Every file of the repository grouped by stage, in the order the stages were run.
 | Tests | `tests/test_main_signals.py` |
 | Results | `results/main/h3.json`, `results/main/secondary.json`, `results/main/cost_axis.json`, `results/main/sensitivity.json`, `results/main/auroc_vs_K.png` |
 
+## Main run, stage B: stability of the H3 differences to the choice of samples
+
+| Kind | Files |
+|---|---|
+| Notebook | `notebooks/step_stability_k9.ipynb` |
+| Code | `src/stability_k9.py` (amendment of 2026-10-09 in `src/analysis_plan.md`) |
+| Results | `results/main/stability_k9.json` |
+
 ## Tests
 
 `tests/test_core_signals.py` (self-consistency, NLI logic), `tests/test_gen_utils.py` (generation utilities), `tests/test_main_checks.py` (stage A), `tests/test_main_signals.py` (stage B). Run with `python -m unittest discover -s tests`. They need no GPU.

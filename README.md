@@ -192,6 +192,7 @@ All generation runs on Kaggle (GPU T4, Internet on) and must be started with **S
 7. `notebooks/step_main_run.ipynb`: tests, a 5-question smoke run, the full run, the check and NLI. It resumes from `data/main/generations_main.jsonl` if the file is in the repository.
 8. `notebooks/step_main_checks.ipynb` (stage A, CPU): semantic entropy finiteness and agreement of the NLI and lemma groupings at configuration B. It must run before any AUROC is computed.
 9. `notebooks/step_main_results.ipynb` (stage B, CPU): tests, then `src/main_results.py`. It writes the H3 comparisons, secondary metrics, cost axis and sensitivity rows to `results/main/` and the summary to `src/main_results.md`.
+10. `notebooks/step_stability_k9.ipynb` (CPU): tests, then `src/stability_k9.py`. It recomputes the H3 differences on the 20 subsets of 9 samples from the cost axis and writes `results/main/stability_k9.json` (amendment of 2026-10-09).
 
 Tests: `python -m unittest discover -s tests`. They run on CPU with stubs for the lemmatizer and the NLI model.
 
